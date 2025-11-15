@@ -4,8 +4,10 @@ import { RouterProvider } from "react-router-dom";
 import router from "./router";
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+import SidebarProvider from "./context/SidebarContext";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <SidebarProvider>
     <RouterProvider router={router} />
- </React.StrictMode>
-)
+  </SidebarProvider>
+);

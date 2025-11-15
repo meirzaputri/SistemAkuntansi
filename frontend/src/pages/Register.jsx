@@ -60,7 +60,7 @@ export default function Register() {
               <div>
                 <button 
                   type="submit"
-                  className="flex items-center justify-center w-full px-4 py-3 text-base font-medium text-white transition rounded-lg shadow-lg"
+                  className="flex items-center justify-center w-full px-4 py-3 text-base font-medium text-white transition rounded-lg shadow-lg bg-[#216eec]  hover:bg-[#1654b7]"
                 >
                   Sign Up
                 </button>
@@ -73,7 +73,7 @@ export default function Register() {
               Already have an account? {""}
               <Link
                 to="/"
-                className="font-medium text-[#2c76ec]"
+                className="font-medium text-[#2c76ec] hover:text-[#195dc9]"
               >
                 Sign In
               </Link>
@@ -81,7 +81,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </div>
-    
+    </div>    
   );
 }
