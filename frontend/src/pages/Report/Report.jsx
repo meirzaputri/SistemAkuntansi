@@ -38,10 +38,15 @@ export default function Reports() {
     const [tanggalPilih, setTanggalPilih] = useState(today); 
     const [page, setPage] = useState(1);
     const [openDropdown, setOpenDropdown] = useState(null); 
+    const [baseTransactions, setBaseTransactions] = useState([]);
 
     const itemsPerPage = 7;
     const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
-    const paginated = filteredTransactions.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+    const paginated = filteredTransactions.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+    );
+
 
     const calculateReportData = (tanggal) => {
         setLoading(true);
@@ -68,7 +73,7 @@ export default function Reports() {
         
         setTimeout(() => {
             setReportSummary(totals);
-            setFilteredTransactions(transactionsOnDate);
+            setBaseTransactions(transactionsOnDate);
             setLoading(false);
         }, 500);
     };
@@ -80,6 +85,16 @@ export default function Reports() {
     useEffect(() => {
         setPage(1);
     }, [tanggalLaporan]);
+
+    useEffect(() => {
+        const result = baseTransactions.filter(item =>
+            item.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredTransactions(result);
+        setPage(1);
+    }, [search, baseTransactions]);
+
         
     return (
         <div> 

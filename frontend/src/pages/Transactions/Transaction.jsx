@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import SearchBar from "../../components/Input/SearchBar";
 import Pagination from "../../components/Pagination";
 import TransactionTable from "../../components/Tabel";
+import FilterModal from "../../components/FilterModal";
 import { FiFilter } from "react-icons/fi";
 import { MdAdd } from "react-icons/md";
 
@@ -9,6 +10,12 @@ export default function Transaction() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
+
+  const [tanggalPilih, setTanggalPilih] = useState("");
+  const [tanggalTransaksi, setTanggalTransaksi] = useState(""); 
+
 
   const data = [
     {
@@ -101,9 +108,14 @@ export default function Transaction() {
     },
   ];
 
-  const filteredData = data.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredData = data.filter((item) => {
+  const matchSearch = item.name.toLowerCase().includes(search.toLowerCase());
+  const matchDate =
+    tanggalTransaksi === "" || item.date === tanggalTransaksi;
+
+    return matchSearch && matchDate;
+  });
+
 
   const itemsPerPage = 7;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -138,7 +150,7 @@ export default function Transaction() {
     <>
       <div className="flex flex-col md:flex-row lg:flex-row justify-between gap-4 mb-6">
         <h1 className="text-black font-medium text-xl py-3 whitespace-nowrap">
-          Transaction
+          Transaksi
         </h1>
 
         <div className="flex flex-col md:flex-row lg:flex-row gap-2 md:items-center">
@@ -168,9 +180,28 @@ export default function Transaction() {
         setOpenDropdown={setOpenDropdown}
       />
 
+      <FilterModal
+        isFilterModalOpen={isFilterModalOpen}
+        tanggalPilih={tanggalPilih}
+        setTanggalPilih={setTanggalPilih}
+        today={today}
+        handleApplyDate={() => {
+          setTanggalTransaksi(tanggalPilih);
+          setIsFilterModalOpen(false);
+        }}
+        handleResetDate={() => {
+          setTanggalPilih(today);
+          setTanggalTransaksi("");
+          setIsFilterModalOpen(false);
+        }}
+        onClose={() => setIsFilterModalOpen(false)}
+      />
+
       <hr className="my-4 border-gray-200" />
 
-      <Pagination page={page} setPage={setPage} totalPages={totalPages} />
+      {paginated.length > 0 && (
+        <Pagination page={page} setPage={setPage} totalPages={totalPages} />
+      )}
     </>
   );
 }
