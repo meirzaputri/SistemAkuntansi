@@ -12,7 +12,7 @@ export default function AppHeader() {
     };
 
     return (
-        <header className="bg-white sticky top-0 z-99999 flex w-full md:border-b lg:border-b md:border-gray-200 px-4 py-4">
+        <header className="bg-white sticky top-0 z-20 flex w-full md:border-b lg:border-b md:border-gray-200 px-4 py-4">
             <div className="flex w-full items-center justify-between lg:justify-normal lg:px-6">
                 <button onClick={handleToggle} className="p-2 rounded-lg lg:hidden">
                     <MdDehaze className="text-black" size={24} />
@@ -26,7 +26,7 @@ export default function AppHeader() {
                     />
                 </div>
 
-                <div className="hidden lg:flex items-center ml-2">
+                <div className="hidden lg:flex items-center">
                     <h1 className="text-lg font-semibold text-black">
                         Sistem Informasi Akuntansi
                     </h1>

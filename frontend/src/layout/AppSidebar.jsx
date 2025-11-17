@@ -5,23 +5,22 @@ import logo from "../assets/logo.png";
 
 const menu = [
   { name: "Dashboard", path: "/apps/dashboard", icon: <MdDashboard size={22} /> },
-  { name: "Transaction", path: "/transactions", icon: <MdAttachMoney size={22} /> },
+  { name: "Transaction", path: "/apps/transactions", icon: <MdAttachMoney size={22} /> },
   { name: "Report", path: "/reports", icon: <MdMenuBook size={22} /> },
 ];
 
 export default function AppSidebar() {
-    const { isExpanded, isMobileOpen } = useSidebar();
+    const { isExpanded, isMobileOpen, toggleMobileSidebar } = useSidebar();
     const location = useLocation();
     const isVisible = isExpanded || isMobileOpen;
-
 
     return (
     <>
       <aside
-            className={`fixed top-0 left-0 h-screen bg-white shadow-lg z-40 transform transition-transform duration-300
+            className={`fixed top-0 left-0 h-screen bg-white shadow-lg z-40 flex flex-col transform transition-transform duration-300
                 ${isExpanded || isMobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-20"}
                 lg:translate-x-0 lg:w-64`}
-        >
+      >
 
         <div className="p-6 font-bold text-xl text-gray-800 dark:text-white flex justify-center">
             <img
@@ -31,7 +30,7 @@ export default function AppSidebar() {
             />
         </div>
 
-        <nav className="px-4 mt-4 space-y-4">
+        <nav className="flex-1 overflow-y-auto px-4 mt-4 space-y-4">
           {menu.map((item) => {
             const active = location.pathname === item.path;
 
@@ -57,7 +56,7 @@ export default function AppSidebar() {
           })}
         </nav>
 
-        <div className="absolute bottom-5 w-full px-4">
+        <div className="px-4 py-4">
           <button
             className="flex items-center gap-3 px-4 py-2 rounded-lg text-sm
               text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
@@ -69,6 +68,12 @@ export default function AppSidebar() {
           </button>
         </div>
       </aside>
+
+      {
+        isMobileOpen && (
+        <div onClick={() => toggleMobileSidebar()} className="fixed inset-0 z-30 lg:hidden"/>
+      )}
+      
     </>
   );
 }
