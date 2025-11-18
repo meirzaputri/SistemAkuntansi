@@ -5,20 +5,9 @@ import SearchBar from "../../components/Input/SearchBar";
 import Pagination from "../../components/Pagination";
 import ReportSummary from "../../components/Report/ReportSummary";
 import FilterModal from "../../components/FilterModal";
+import DetailModal from "../../components/DetailModal";
 
-const data = [
-        { id: 1, name: "Pembelian ATK", date: "2025-11-17", category: "Kas Keluar", amount: 320000, createdBy: "Admin" },
-        { id: 2, name: "Pembayaran Siswa", date: "2025-11-17", category: "Kas Masuk", amount: 1500000, createdBy: "Clara" },
-        { id: 3, name: "Gaji Karyawan", date: "2025-11-17", category: "Kas Keluar", amount: 5000000, createdBy: "Manager" },
-        { id: 4, name: "Donasi", date: "2025-11-17", category: "Kas Masuk", amount: 200000, createdBy: "Anonim" },
-        { id: 5, name: "Perbaikan Komputer", date: "2025-01-25", category: "Kas Keluar", amount: 450000, createdBy: "Teknisi" },
-        { id: 6, name: "Iuran Bulanan", date: "2025-01-28", category: "Kas Masuk", amount: 800000, createdBy: "Bendahara" },
-        { id: 7, name: "Penjualan Aset", date: "2025-01-29", category: "Kas Masuk", amount: 1200000, createdBy: "Manager" },
-        { id: 8, name: "Biaya Listrik", date: "2025-01-30", category: "Kas Keluar", amount: 350000, createdBy: "Admin" },
-        { id: 9, name: "Dana Pengembangan", date: "2025-02-01", category: "Kas Masuk", amount: 500000, createdBy: "Clara" },
-        { id: 10, name: "Pembelian Peralatan", date: "2025-02-05", category: "Kas Keluar", amount: 900000, createdBy: "Teknisi" },
-        { id: 11, name: "Pelunasan Utang", date: "2025-02-10", category: "Kas Masuk", amount: 2000000, createdBy: "Manager" },
-];
+import { getDailyReport } from "../../services/report";
 
 const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, }).format(number);
 const formatDate = (dateString) => {
@@ -40,6 +29,9 @@ export default function Reports() {
     const [openDropdown, setOpenDropdown] = useState(null); 
     const [baseTransactions, setBaseTransactions] = useState([]);
 
+    const [detailData, setDetailData] = useState(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+
     const itemsPerPage = 7;
     const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
     const paginated = filteredTransactions.slice(
@@ -48,34 +40,38 @@ export default function Reports() {
     );
 
 
-    const calculateReportData = (tanggal) => {
+    const calculateReportData = async (tanggal) => {
         setLoading(true);
         setReportSummary(null);
         setFilteredTransactions([]);
 
-        const transactionsOnDate = data.filter(item => item.date === tanggal);
-        
-        if (transactionsOnDate.length === 0) {
-            setLoading(false);
-            setReportSummary({ total_kas_masuk: 0, total_kas_keluar: 0 });
-            setFilteredTransactions([]);
-            return;
-        }
+        try {
+            const token = localStorage.getItem("token");
 
-        const totals = transactionsOnDate.reduce((acc, item) => {
-            if (item.category === 'Kas Masuk') {
-                acc.total_kas_masuk += item.amount;
-            } else if (item.category === 'Kas Keluar') {
-                acc.total_kas_keluar += item.amount;
+            const res = await getDailyReport(tanggal, token);
+            
+            setReportSummary({
+                total_kas_masuk: res.total_kas_masuk,
+                total_kas_keluar: res.total_kas_keluar,
+            });
+
+            if (res.transaksi) {
+                setBaseTransactions(res.transaksi);
+                setFilteredTransactions(res.transaksi);
+            } else {
+                setBaseTransactions([]);
+                setFilteredTransactions([]);
             }
-            return acc;
-        }, { total_kas_masuk: 0, total_kas_keluar: 0 });
-        
-        setTimeout(() => {
-            setReportSummary(totals);
-            setBaseTransactions(transactionsOnDate);
-            setLoading(false);
-        }, 500);
+            
+        } catch (err) {
+            console.error(err);
+            setReportSummary({
+            total_kas_masuk: 0,
+            total_kas_keluar: 0,
+            });
+        } finally {
+            setLoading(false)
+        }
     };
 
     useEffect(() => {
@@ -94,6 +90,14 @@ export default function Reports() {
     setFilteredTransactions(result);
         setPage(1);
     }, [search, baseTransactions]);
+
+    const onDetail = (id) => {
+      const selected = baseTransactions.find((t) => t.id === id);
+      
+      setDetailData(selected);
+      setIsDetailOpen(true);
+      setOpenDropdown(null);
+  };
 
         
     return (
@@ -130,6 +134,8 @@ export default function Reports() {
                 formatRupiah={formatRupiah}
                 openDropdown={openDropdown}
                 setOpenDropdown={setOpenDropdown}
+                mode="report"
+                onDetail={onDetail}
             />
 
             <FilterModal
@@ -147,6 +153,14 @@ export default function Reports() {
                     setIsFilterModalOpen(false);
                 }}
                 onClose={() => setIsFilterModalOpen(false)}
+            />
+
+            <DetailModal
+                    isOpen={isDetailOpen}
+                    onClose={() => setIsDetailOpen(false)}
+                    data={detailData}
+                    formatDate={formatDate}
+                    formatRupiah={formatRupiah}
             />
 
             <hr className="my-4 border-gray-200" />

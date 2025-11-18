@@ -34,7 +34,6 @@ export default function Transaction() {
   const fetchData = async () => {
     try {
       const res = await getTransactions(token);
-      console.log("GET TRANSACTIONS:", res.data);
     
       setTransactions(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
@@ -62,9 +61,7 @@ export default function Transaction() {
   );
 
     const onDetail = (id) => {
-      console.log("onDetail terpanggil, id =", id);
       const selected = transactions.find((t) => t.id === id);
-      console.log("DATA TERPILIH =", selected); 
       
       setDetailData(selected);
       setIsDetailOpen(true);
