@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
-export default function Action({ itemId, onDetail, onEdit }) {
+export default function Action({ itemId, onDetail, onEdit, onDelete }) {
   return (
     <td className="py-2 px-4 text-right relative">
       <div className="flex items-center justify-end gap-3">
@@ -24,7 +24,6 @@ export default function Action({ itemId, onDetail, onEdit }) {
 
         <button
           onClick={() => {
-            console.log("Klik HAPUS", itemId);
             onDelete(itemId);
           }}
           className="text-red-600 hover:text-red-800"

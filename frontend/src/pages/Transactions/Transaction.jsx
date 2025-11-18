@@ -6,7 +6,7 @@ import FilterModal from "../../components/FilterModal";
 import FormModal from "../../components/FormModal";
 import DetailModal from "../../components/DetailModal";
 
-import { getTransactions, createTransaction, updateTransaction } from "../../services/transaction";
+import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from "../../services/transaction";
 import { useAuth } from "../../context/AuthContext";
 import { FiFilter } from "react-icons/fi";
 import { MdAdd } from "react-icons/md";
@@ -78,6 +78,24 @@ export default function Transaction() {
     setOpenDropdown(null);
   };
 
+  const onDelete = async (id) => {
+  const confirmDelete = confirm("Yakin ingin menghapus transaksi ini?");
+
+  if (!confirmDelete) return;
+
+  try {
+    await deleteTransaction(id, token);
+
+    const res = await getTransactions(token);
+    setTransactions(res.data);
+
+    setOpenDropdown(null);
+  } catch (err) {
+    alert("Gagal menghapus transaksi");
+  }
+};
+
+
   useEffect(() => setPage(1), [search]);
 
 
@@ -139,6 +157,7 @@ export default function Transaction() {
         setOpenDropdown={setOpenDropdown}
         onDetail={onDetail}
         onEdit={onEdit}
+        onDelete={onDelete}
       />
 
       <FilterModal

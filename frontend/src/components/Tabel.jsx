@@ -12,6 +12,7 @@ function Table({
   setOpenDropdown,
   onDetail,
   onEdit,
+  onDelete,
 }) {
   const categoryClass =
     item.category === "kas_masuk"
@@ -45,6 +46,7 @@ function Table({
         setOpenDropdown={setOpenDropdown}
         onDetail={onDetail}
         onEdit={onEdit}
+        onDelete={onDelete}
       />
     </tr>
   );
@@ -58,6 +60,7 @@ export default function TransactionTable({
   setOpenDropdown,
   onDetail,
   onEdit,
+  onDelete
 }) {
   if (!paginated || paginated.length === 0) {
     return (
@@ -98,6 +101,7 @@ export default function TransactionTable({
               setOpenDropdown={setOpenDropdown}
               onDetail={onDetail}
               onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))}
         </tbody>

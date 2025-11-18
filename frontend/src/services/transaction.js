@@ -26,3 +26,9 @@ export const updateTransaction = async (id, formData, token) =>
     },
 });
 
+export const deleteTransaction = (id, token) =>
+  api.delete(`/transactions/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+

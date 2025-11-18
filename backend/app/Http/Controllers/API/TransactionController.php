@@ -73,4 +73,18 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        $transaction = Transaction::find($id);
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $transaction->delete();
+
+        return response()->json(['message' => 'Berhasil dihapus']);
+    }
+
+
 }
