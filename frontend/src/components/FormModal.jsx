@@ -10,7 +10,7 @@ export default function FormModal({
   const [form, setForm] = useState({
     name: "",
     date: "",
-    category: "Pilih Kategori",
+    category: "",
     description: "",
     amount: "",
   });
@@ -28,12 +28,12 @@ export default function FormModal({
       setForm({
         name: "",
         date: "",
-        category: "Pilih Kategori",
+        category: "",
         description: "",
         amount: "",
       });
     }
-  }, [initialData]);
+  }, [initialData, isOpen]);
 
   if (!isOpen) return null;
 

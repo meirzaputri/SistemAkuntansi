@@ -24,7 +24,7 @@ export default function Transaction() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const [detailOpen, setDetailOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
 
   const [transactions, setTransactions] = useState([]);
@@ -61,18 +61,19 @@ export default function Transaction() {
     page * itemsPerPage
   );
 
-    const handleDetail = (id) => {
-    const data = paginated.find((x) => x.id === id);
-
-    console.log("DETAIL DATA:", data);
-
-    setDetailData(data);
-    setDetailOpen(true);
-    setOpenDropdown(null);
+    const onDetail = (id) => {
+      console.log("onDetail terpanggil, id =", id);
+      const selected = transactions.find((t) => t.id === id);
+      console.log("DATA TERPILIH =", selected); 
+      
+      setDetailData(selected);
+      setIsDetailOpen(true);
+      setOpenDropdown(null);
   };
 
 
   useEffect(() => setPage(1), [search]);
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -130,7 +131,7 @@ export default function Transaction() {
         formatRupiah={formatRupiah}
         openDropdown={openDropdown}
         setOpenDropdown={setOpenDropdown}
-        onDetail={handleDetail}
+        onDetail={onDetail}
       />
 
       <FilterModal
@@ -169,9 +170,11 @@ export default function Transaction() {
       />
 
       <DetailModal
-        isOpen={detailOpen}
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
         data={detailData}
-        onClose={() => setDetailOpen(false)}
+        formatDate={formatDate}
+        formatRupiah={formatRupiah}
       />
 
       <hr className="my-4 border-gray-200" />

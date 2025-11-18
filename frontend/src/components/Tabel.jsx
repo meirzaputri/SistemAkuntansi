@@ -1,5 +1,5 @@
 import React from "react";
-import ActionDropdown from "./ActionDropdown";
+import ActionDropdown from "./Action";
 import FormModal from "./FormModal";
 import DetailModal from "./DetailModal";
 import { useState } from "react";
@@ -54,13 +54,21 @@ export default function TransactionTable({
   formatRupiah,
   openDropdown,
   setOpenDropdown,
+  onDetail
 }) {
   if (!paginated || paginated.length === 0) {
-    return null;
+    return (
+      <div className="w-full text-center text-gray-500 py-10">
+        Tidak ada data yang ditampilkan
+      </div>
+    )
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState(null);
 
   return (
     <>
@@ -85,6 +93,7 @@ export default function TransactionTable({
               formatRupiah={formatRupiah}
               openDropdown={openDropdown}
               setOpenDropdown={setOpenDropdown}
+              onDetail={onDetail}
             />
           ))}
         </tbody>
@@ -94,6 +103,11 @@ export default function TransactionTable({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={selectedData}
+      />
+      <DetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        data={selectedDetail}
       />
     </>
   );
