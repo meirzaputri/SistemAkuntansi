@@ -1,31 +1,15 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { me } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
+
 
 export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
-  const [isValid, setIsValid] = useState(null);
+  const { isAuthenticated, loading } = useAuth();
 
-  useEffect(() => {
-    const checkToken = async () => {
-      if (!token) {
-        setIsValid(false);
-        return;
-      }
+  if (loading) return <div>Loading...</div>;
 
-      try {
-        await me(token);
-        setIsValid(true);
-      } catch {
-        localStorage.removeItem("token");
-        setIsValid(false);
-      }
-    };
+  if (!isAuthenticated) return <Navigate to="/" replace />;
 
-    checkToken();
-  }, []);
-
-  if (isValid === null) return null;
-
-  return isValid ? children : <Navigate to="/" replace />;
+  return children;
 }

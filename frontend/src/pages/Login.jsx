@@ -5,6 +5,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import Label from "../components/Label";
 import Input from "../components/Input/InputField";
 import logo from "../assets/logo.png";
+import { useAuth } from "../context/AuthContext";
 
 import { login } from "../services/auth";
 
@@ -15,23 +16,17 @@ export default function Login() {
   const [message,setMessage] = useState("");
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const res = await login({ email, password });
-    localStorage.setItem("token", res.data.access_token);
-    navigate("/apps");
-
-  } catch (err) {
-    const msg =
-      err.response?.data?.error ||
-      err.response?.data?.message ||
-      "Email atau password salah";
-
-    setMessage(msg);
-  }
-};
+    e.preventDefault();
+    try {
+      await login(email, password);
+      navigate("/apps");
+    } catch (err) {
+      setMessage("Email atau password salah");
+    }
+  };
 
   return (
     <div className="flex md:justify-center md:items-center min-h-screen">
